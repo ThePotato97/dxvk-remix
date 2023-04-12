@@ -30,7 +30,6 @@ jobs:
 
     - name: Build dxvk_rt Project
       run: |
-        cd dxvk-remix
         meson --buildtype=release _Comp64Release
         ninja -C _Comp64Release
 
