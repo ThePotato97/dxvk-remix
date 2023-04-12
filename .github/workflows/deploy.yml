@@ -3,43 +3,22 @@ name: Build DXVK Remix
 on: [workflow_dispatch]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  build-dxvk_rt:
+    runs-on: windows-latest
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        submodules: 'recursive'
-        
-    - name: Change working directory to root of cloned repository
-      run: cd /home/runner/work/dxvk-remix/dxvk-remix
 
-
-    - name: Prepare Vulkan SDK
-      uses: humbletim/setup-vulkan-sdk@v1.2.0
-      with:
-        vulkan-query-version: 1.3.204.0
-        vulkan-components: Vulkan-Headers, Vulkan-Loader
-        vulkan-use-cache: true
-
-    - name: Install Dependencies
+    - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential git python3 python3-pip ninja-build meson
+        choco install python --version=3.9 -y
+        choco install visualstudio2019community --package-parameters "--includeRecommended --includeOptional --passive" -y
+        choco install vulkan-sdk --version=1.3.211.0 -y
+        choco install meson --version=0.61.4 -y
 
-    - name: Build dxvk_rt Project
+    - name: Build dxvk_rt
+      shell: powershell
       run: |
-        meson --buildtype=release _Comp64Release
-        ninja -C _Comp64Release
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+        .\build_dxvk_all_ninja.ps1
 
-    - name: Create Zip Archive
-      run: |
-        cd dxvk-remix
-        zip -r dxvk-remix.zip *
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: dxvk-remix
-        path: dxvk-remix.zip
