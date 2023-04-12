@@ -35,6 +35,6 @@ jobs:
 
     - name: Build
       shell: pwsh
-      run: 
+      run: |
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         .\build_dxvk_all_ninja.ps1
