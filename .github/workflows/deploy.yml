@@ -1,0 +1,28 @@
+name: Build DXVK Remix
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Install Dependencies
+      run: |
+        choco install -y visualstudio2019community
+        choco install -y windows-sdk-10.0
+        choco install -y meson
+        choco install -y vulkan-sdk
+        choco install -y python
+
+    - name: Enable PowerShell Scripts
+      run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+
+    - name: Clone Repository
+      run: |
+        git clone --recursive https://github.com/NVIDIAGameWorks/dxvk-remix.git
+        cd dxvk-remix
+        git submodule update --init --recursive
+
+    - name: Build dxvk_rt Project
+      run: powershell -command "& .\build_dxvk_all_ninja.ps1"
