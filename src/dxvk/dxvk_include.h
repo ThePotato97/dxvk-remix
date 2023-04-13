@@ -25,7 +25,7 @@
 #include "../vulkan/vulkan_util.h"
 
 #ifdef NDEBUG
-#define REMIX_SHIPPING
+#define REMIX_DEVELOPMENT
 #else
 #define REMIX_DEVELOPMENT
 #endif
