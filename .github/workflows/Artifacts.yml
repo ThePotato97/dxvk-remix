@@ -38,3 +38,19 @@ jobs:
       run: |
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         .\build_dxvk_all_ninja.ps1
+        
+    - name: Build dxvk_rt.sln
+      shell: pwsh
+      working-directory: _vs
+      run: |
+        ${Env:VSDEVCMD} > $null
+        msbuild.exe dxvk_rt.sln /t:Rebuild /p:Configuration=Release /p:Platform=x64
+
+    - name: Zip binaries
+      run: Compress-Archive -LiteralPath '_vs/x64' -DestinationPath 'dxvk_rt-binaries.zip'
+    
+    - name: Upload binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: dxvk_rt-binaries
+        path: dxvk_rt-binaries.zip
